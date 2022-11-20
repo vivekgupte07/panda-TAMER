@@ -49,7 +49,7 @@ def Multivariable_Linear_Regression(X, y, learningrate, iterations):
 def calculate_reward(feature, h, activity):
     reward = 0
     if not activity == 0:
-        theta, x = Multivariable_Linear_Regression(feature, h, 0.01, 50)
+        theta, x = Multivariable_Linear_Regression(feature, h, 0.01, 100)
         m = len(x)
         for i in range(len(theta)):
             reward += x[m - 1][i] * theta[i][0]

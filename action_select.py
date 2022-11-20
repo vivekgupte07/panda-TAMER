@@ -12,7 +12,7 @@ def action_select(obs):
         weights = loadtxt('theta.csv')
         next_rew_matrix = []
         feature_matrix = []
-        feature_matrix = [obs] * len(action_space)
+        feature_matrix = [obs + obs] * len(action_space)
         feature_matrix = np.array(feature_matrix)
         dv = 0.5
         for action in action_space:
@@ -41,6 +41,7 @@ def action_select(obs):
             for m in range(len(feature_matrix[0])):
                 next_rew += feature_matrix[n][m] * weights[m+1]
             next_rew_matrix.append(next_rew)
+        print(next_rew_matrix)
         next_action = action_space[next_rew_matrix.index(max(next_rew_matrix))]
         action = next_action
     else:

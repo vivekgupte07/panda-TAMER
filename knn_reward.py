@@ -34,7 +34,7 @@ def find_neighbours(obs, k):
         neighbours_rews.append(rew[nearest_distances[i][1]])
 
     reward = max(set(neighbours_rews), key=neighbours_rews.count)
-    return reward
+    return reward,
 
 #  in action select:  Try different actions, get new obs for each, for each obs calculate reward
 # using this knn and then choose action with max reward

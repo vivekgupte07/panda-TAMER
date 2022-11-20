@@ -11,10 +11,8 @@ from numpy import savetxt, loadtxt
 import random
 from rewardmodel import generateXvector, theta_init, Multivariable_Linear_Regression, calculate_reward
 
-EPISODE_LEN = 300
-THRESHOLD = 0.3
-
-
+EPISODE_LEN = 480
+THRESHOLD = 0.25
 class PandaEnv(gym.Env):
     metadata = {'render.modes': ['human']}
 
@@ -22,13 +20,12 @@ class PandaEnv(gym.Env):
         #  Misc counters
         self.observation = None
         self.reward = None
+        self.threshold = THRESHOLD
         self.step_counter = 0
-        self.ep_reward = 0
         self.episode = 0
         self.t = 0
         self.counter = 0
 
-        self.threshold = THRESHOLD
         self.episode_len = EPISODE_LEN
 
         #  Gym
@@ -36,19 +33,20 @@ class PandaEnv(gym.Env):
         self.observation_space = spaces.Box(np.array([-1] * 6), np.array([1] * 6))
 
         # Pybullet
-        p.connect(p.DIRECT)
+        p.connect(p.GUI)
         p.resetDebugVisualizerCamera(cameraDistance=1.5, cameraYaw=0, cameraPitch=-40,
                                      cameraTargetPosition=[0.55, -0.35, 0.2])
 
     def step(self, action):
         p.configureDebugVisualizer(p.COV_ENABLE_SINGLE_STEP_RENDERING)
         orientation = p.getQuaternionFromEuler([0., -math.pi, math.pi / 2.])
-        dv = 0.05
-        fingers = 0
-
+        dv = 5/240
+        fingers = 1
+        print(action)
         dx = action[0] * dv
         dy = action[1] * dv
         dz = action[2] * dv
+
         currentPose = p.getLinkState(self.pandaUid, 11)
         currentPosition = currentPose[0]
         newPosition = [currentPosition[0] + dx,
@@ -61,67 +59,47 @@ class PandaEnv(gym.Env):
         state_robot = p.getLinkState(self.pandaUid, 11)[0]
         state_fingers = (p.getJointState(self.pandaUid, 9)[0], p.getJointState(self.pandaUid, 10)[0])
 
-        err = []
-        for i in range(3):
-            err.append(abs(state_object[i] - state_robot[i]))
-        dist = round(math.sqrt(err[0] ** 2 + err[1] ** 2 + err[2] ** 2), 3)
-
         p.setJointMotorControlArray(self.pandaUid, list(range(7)) + [9, 10], p.POSITION_CONTROL,
                                     list(jointPoses) + 2 * [fingers])
 
         p.stepSimulation()
+        self.step_counter += 1
 
         state_object, _ = p.getBasePositionAndOrientation(self.objectUid)
         state_robot = p.getLinkState(self.pandaUid, 11)[0]
         state_robot_list = list(state_robot)
-        for i in range(len(state_robot)):
-            state_robot_list[i] = round(state_robot[i], 3)
 
-        new_err = []
+        dist_sq = 0
         for i in range(3):
-            new_err.append(abs(state_object[i] - state_robot[i]))
-        new_dist = round(math.sqrt(new_err[0] ** 2 + new_err[1] ** 2 + new_err[2] ** 2), 3)
-
-        if new_dist < dist:
-            self.reward = 1
-        else:
-            self.reward = 0
-
-        self.step_counter = 1
-
-        if self.step_counter > EPISODE_LEN:
-            done = True
-        elif state_robot[2] < 0:
-            done = False
-
-            print("CLASH!")
-        elif dist < 0.1:
-            done = True
-            print("SUCCESS!")
+            dist_sq += (state_robot[i] - state_object[i]) ** 2
+        dist = math.sqrt(dist_sq)
+        done = False
+        # Discrete Reward for Task Success: Level 1 (R1-1)
+        self.reward -= 0.01
+        if dist <= self.threshold:
+            self.reward += 10
+            self.t += 1
+            if dist <= 0.25:
+                print("Success!")
+                done = True
+            if self.t >= 30:
+                self.threshold -= 0.01
         else:
             done = False
-
+        if self.step_counter>= 480:
+            done = True
         self.observation = state_robot + state_object
-        print(type(self.observation))
         return np.array(self.observation).astype(np.float32), self.reward, done, {}
 
     def reset(self):
-        print("0000000Reset0000000")
-        print(self.ep_reward, self.step_counter)
-        self.ep_reward = 0
         p.resetSimulation()
-
         self.step_counter = 0
-        self.counter = 0
-        self.t = 0
-        self.counter = 0
         self.reward = 0
-        self.threshold = THRESHOLD
-
+        self.t = 0
         p.configureDebugVisualizer(p.COV_ENABLE_RENDERING, 0)  # we will enable rendering after we loaded everything
         urdfRootPath = pybullet_data.getDataPath()
 
-        p.setGravity(0, 0, -10)
+        p.setGravity(0, 0, -9.81)
 
         planeUid = p.loadURDF(os.path.join(urdfRootPath, "plane.urdf"), basePosition=[0, 0, -0.65])
 
@@ -138,8 +116,9 @@ class PandaEnv(gym.Env):
 
         state_object = [random.uniform(0.5, 0.8), random.uniform(-0.2, 0.2), 0.001]
         # state_object = [0.75, 0, 0]
-        self.objectUid = p.loadURDF(os.path.join(urdfRootPath, "random_urdfs/000/000.urdf"), basePosition=state_object,
+        self.objectUid = p.loadURDF(os.path.join(urdfRootPath, "sphere_small.urdf"), basePosition=state_object,
                                     useFixedBase=True)
+
         state_robot = p.getLinkState(self.pandaUid, 11)[0]
         state_fingers = (p.getJointState(self.pandaUid, 9)[0], p.getJointState(self.pandaUid, 10)[0])
         self.observation = state_robot + (0, 0, 0)

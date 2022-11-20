@@ -6,7 +6,7 @@ from stable_baselines3.common.evaluation import evaluate_policy
 import os
 
 
-models_dir = "PPO/Trial_27-PPOvTAMER_LF"
+models_dir = "PPO/MATH_Fred"
 logdir = "logs"
 
 if not os.path.exists(models_dir):
@@ -19,12 +19,11 @@ if not os.path.exists(logdir):
 env = make_vec_env("panda-v0", n_envs=1)
 
 model = PPO("MlpPolicy", env, verbose=1, tensorboard_log=logdir)
-env.reset()
 
-TIMESTEPS = 100000
+TIMESTEPS = 50
 i = 1
-while True:
-    model.learn(total_timesteps=TIMESTEPS, reset_num_timesteps=False, tb_log_name="PPO_27_PPOLFCOMP")
+while i <= 10:
+    model.learn(total_timesteps=TIMESTEPS, reset_num_timesteps=False, tb_log_name="MATH_Fred_PPO")
     print("Saving...")
     model.save(f"{models_dir}/{TIMESTEPS*i}")
     i += 1
