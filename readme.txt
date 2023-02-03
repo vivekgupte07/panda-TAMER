@@ -4,3 +4,4 @@ Pycharm any version
 Anaconda env
 Pycharm: Go thorugh intrepreter settings in directory
 
+Paste gym-panda folder in site-packages
