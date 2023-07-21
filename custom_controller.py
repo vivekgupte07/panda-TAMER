@@ -1,20 +1,21 @@
-import random
+import os
 import gym
+import random
 import gym_panda
 from numpy import savetxt
-from action_select_knn import knn_action_select
 from action_select import action_select
 from action_select_nn import nn_action_select
-from rewardmodel_classification import train_model
-import os
+from action_select_knn import knn_action_select
+from reward-functions.rewardmodel_classification import train_model
 
 
-training = False
+
+training = False  # False if replaying
 
 env = gym.make("panda-v0")
 action_space = [0, 1, 2, 3, 4]
 dones = False
-gamma = 0
+gamma = 0 #Exploration-exploitation coefficient
 env.reset()
 f = 0
 k = 2

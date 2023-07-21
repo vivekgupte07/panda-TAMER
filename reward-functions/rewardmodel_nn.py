@@ -36,10 +36,10 @@ def larger_model(X, y):
 
 def make_prediction(x_new):
     # load dataset
-    X = loadtxt('features.csv')
-    y = loadtxt('rewards.csv')
-    if os.path.exists('model_1.h5'):
-        model = load_model('model_1.h5')
+    X = loadtxt('artifacts/features.csv')
+    y = loadtxt('artifacts/rewards.csv')
+    if os.path.exists('artifacts/model_1.h5'):
+        model = load_model('artifacts/model_1.h5')
 
     scalarXnew = MinMaxScaler()
     scalarXnew.fit(X)
@@ -59,13 +59,13 @@ def train_partially(X, y):
     model = load_model('model_1.h5')
     model.compile(loss='mean_squared_error', optimizer='adam')
     model.fit(X, y, batch_size=1, epochs=100, verbose=1)
-    model.save('model_1.h5')
+    model.save('artifacts/model_1.h5')
     return model
 
 
 def train_model(method):
-    X = loadtxt('features.csv')
-    y = loadtxt('rewards.csv')
+    X = loadtxt('artifacts/features.csv')
+    y = loadtxt('artifacts/rewards.csv')
     if method == 'full':
         model = larger_model(X, y)
     if method == 'partial':

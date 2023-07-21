@@ -1,12 +1,12 @@
+import os
 import gym
 import gym_panda
 import numpy as np
-import os
-
 from stable_baselines3 import TD3
 from stable_baselines3.common.noise import NormalActionNoise, OrnsteinUhlenbeckActionNoise
 
-models_dir = "TD3/R3(1)"
+
+models_dir = "models/TD3/R3(1)"
 logdir = "logs"
 
 if not os.path.exists(models_dir):
@@ -28,3 +28,4 @@ while i <= 10:
     model.learn(total_timesteps=TIMESTEPS, log_interval=1, reset_num_timesteps=False, tb_log_name='R3_TD3(1)')
     model.save(f"{models_dir}/{TIMESTEPS*i}")
     i += 1
+

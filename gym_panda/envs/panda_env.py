@@ -1,16 +1,19 @@
-import gym
-from gym import error, spaces, utils
-from gym.utils import seeding
-from gym.human_response import human_response
 import os
+import gym
+import math
+import random
+from gym.utils import seeding
+from gym import error, spaces, utils
+#from gym.human_response import human_response ...... ## NEED TO REWRITE THIS FILE
+
 import pybullet as p
 import pybullet_data
-import math
+
 import numpy as np
 from numpy import savetxt, loadtxt
-import random
-from gym_panda.envs.autorewards import autorewards
-from rewardmodel_classification import train_model, predict
+
+from reward-functions.autorewards import autorewards
+from reward-functions.rewardmodel_classification import train_model, predict
 
 
 EPISODE_LEN = 24

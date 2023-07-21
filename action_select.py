@@ -1,15 +1,14 @@
-import random
 import os
+import random
 import numpy as np
 from numpy import savetxt, loadtxt
-import rewardmodel
-from rewardmodel import calculate_reward
+from reward-functions.rewardmodel import calculate_reward
 
 
 def action_select(obs):
     action_space = [1, 2, 3, 4, 5, 6, 7]
-    if os.path.exists('theta.csv'):
-        weights = loadtxt('theta.csv')
+    if os.path.exists('artifacts/theta.csv'):
+        weights = loadtxt('artifacts/theta.csv')
         next_rew_matrix = []
         feature_matrix = []
         feature_matrix = [obs + obs] * len(action_space)

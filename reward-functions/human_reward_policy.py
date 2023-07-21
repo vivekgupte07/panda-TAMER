@@ -1,5 +1,5 @@
 import numpy as np
-
+# Learns a reward model using human input as dataset
 
 def ssr_gradient(x, y, b):
     res = b[0] + b[1] * x - y

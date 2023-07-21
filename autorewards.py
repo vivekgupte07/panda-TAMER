@@ -1,3 +1,5 @@
+# Function to automate human feedback for quick testing. Modelled as giving ideal feedback.
+
 def autorewards(dist, new_dist, newPosition):
     H = 0
     if dist <= 0.25:

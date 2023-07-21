@@ -1,13 +1,15 @@
+import os
 import gym
 import gym_panda
 import numpy as np
+from stable_baselines3 import DDPG
 from stable_baselines3.ddpg.policies import MlpPolicy
 from stable_baselines3.common.noise import OrnsteinUhlenbeckActionNoise
 from stable_baselines3.common.env_util import make_vec_env
-from stable_baselines3 import DDPG
-import os
 
-models_dir = "DDPG/R1_L1"
+
+
+models_dir = "models/DDPG/R1_L1"
 logdir = "logs"
 
 if not os.path.exists(models_dir):

@@ -1,12 +1,12 @@
 import os
 import random
 import numpy as np
-from rewardmodel_classification import predict
+from reward-functions.rewardmodel_classification import predict
 
 
 def nn_action_select(obs):
     action_space = [0, 1, 2, 3, 4]
-    if os.path.exists("features.csv"):
+    if os.path.exists("artifacts/features.csv"):
         next_rew_matrix = []
         obs = list(obs)
         feature_matrix = [obs + [0]] * len(action_space)

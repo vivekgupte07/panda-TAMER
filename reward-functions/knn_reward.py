@@ -38,3 +38,4 @@ def find_neighbours(obs, k):
 
 #  in action select:  Try different actions, get new obs for each, for each obs calculate reward
 # using this knn and then choose action with max reward
+
