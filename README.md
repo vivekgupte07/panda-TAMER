@@ -1,6 +1,17 @@
-# TAMER framework for Panda Robot Arm
+# TAMER Framework for the Panda Robot Arm
 
 This repository is an implementation of an interactive learning framework 'TAMER' for training an end-to-end position controller on the Panda robot. A Gym-Pybullet interface is used for training the tasks. This project is my thesis work, where we compare the traditional reward engineering and the interactive TAMER framework to train the robot to reach a certain position goal. We ask users who are not robotics or learning experts to develop simple conditions that act as reward signal to the RL agent and also ask them to use a simple key-pressing interface to give rewards to the TAMER agent. In both cases, the agent is the Panda robot. 
+
+The Pybullet simulator with the robot looks as shown in the figure below:
+
+![env](https://github.com/vivekgupte07/panda-TAMER/assets/67819132/eaf5841d-4f6c-46bb-84f3-a5a119c4f275) 
+
+This gym-pybullet interface used in this tutorial was taken from [this](https://www.etedal.net/2020/04/pybullet-panda.html) tutorial.
+
+Using this environment, where the base of the arm is fixed on the table $(0,0,0)$. The state space is the end effector co-ordinates $(x, y, z)$. The orientation of the end-effector is fixed for simplicity. The action space is the target co-ordinates, and the arm takes a small step towards the target at each time step.
+
+
+
 
 ## More on TAMER 
 TAMER stands for "**T**raining an **Ag**ent **M**annually using **E**valuative **R**einforcement". It is an interactive reward shaping method introduced by [Knox and Stone (2008)]([https://dl.acm.org/doi/abs/10.1145/1597735.1597738](https://ieeexplore.ieee.org/abstract/document/4640845)). This method is inspired from a need to allow easier method for humans to transfer their knowledge to robots, allowing robots to learn complex tasks more efficiently. This framework also provides an alternative to problem of reward engineering for learning complex tasks.
